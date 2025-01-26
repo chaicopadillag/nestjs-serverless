@@ -1,4 +1,4 @@
-service: serverless-example
+service: orders
 
 plugins:
   - serverless-offline
@@ -7,6 +7,7 @@ provider:
   name: aws
   runtime: nodejs22.x
   stage: dev
+  profile: developer
   region: us-east-2
 
 functions:
