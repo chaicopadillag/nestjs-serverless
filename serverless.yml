@@ -12,8 +12,45 @@ provider:
 
 functions:
   orders:
-    handler: dist/main.handler
+    handler: apps/orders/src/main.handler
     events:
       - httpApi:
-          path: /
+          path: /orders
+          method: POST
+  orderById:
+    handler: apps/order/src/main.handler
+    events:
+      - httpApi:
+          path: /orders/{orderId}
           method: GET
+
+# build:
+#   esBuild:
+#     bundle: true
+#     sourcemap: true
+#     minify: true
+#     target: nodejs22.x
+
+package:
+  individually: true
+  # patterns:
+  #   - '!node_modules/**'
+  #   - '!dist/**'
+  #   - '!coverage/**'
+  #   - '!cypress/**'
+  #   - '!apps/**'
+  #   - '!serverless.yml'
+  #   - '!.serverless/**'
+  #   - '!.git/**'
+  #   - '!.eslintrc.js'
+  #   - '!.prettierrc'
+  #   - '!.gitignore'
+  #   - '!nest-cli.json'
+  #   - '!package.json'
+  #   - '!package-lock.json'
+  #   - '!README.md'
+  #   - '!tsconfig.build.json'
+  #   - '!tsconfig.json'
+  #   - '!yarn.lock'
+  #   - '!esbuild.config.js'
+  #   - '!apps/**'
