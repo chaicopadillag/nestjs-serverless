@@ -11,19 +11,37 @@ provider:
   region: us-east-2
 
 functions:
-  orders:
-    handler: apps/orders/src/main.handler
+  createOrder:
+    handler: dist/apps/orders/src/main.handler
+    name: create-new-${self:service}-${self:provider.stage}
     events:
       - httpApi:
           path: /orders
           method: POST
-  orderById:
-    handler: apps/order/src/main.handler
+  getOrderById:
+    handler: dist/apps/order/src/main.handler
+    name: get-order-by-id-${self:service}-${self:provider.stage}
     events:
       - httpApi:
           path: /orders/{orderId}
           method: GET
+  prepareOrder:
+    handler: dist/apps/queue/src/main.handler
+    name: prepare-order-${self:service}-${self:provider.stage}
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - PendingOrdersQueue
+              - Arn
+          batchSize: 1
 
+resources:
+  Resources:
+    PendingOrdersQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: pending-${self:service}-queue
 # build:
 #   esBuild:
 #     bundle: true
