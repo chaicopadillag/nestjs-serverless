@@ -12,22 +12,31 @@ provider:
 
 functions:
   createOrder:
-    handler: build/apps/orders/src/main.handler
+    handler: build/orders/src/main.handler
     name: create-new-order${self:service}-${self:provider.stage}
+    package:
+      patterns:
+        - build/orders/src/**
     events:
       - httpApi:
           path: /orders
           method: POST
   getOrder:
-    handler: build/apps/order/src/main.handler
+    handler: build/order/src/main.handler
     name: get-order-${self:service}-${self:provider.stage}
+    package:
+      patterns:
+        - build/order/src/**
     events:
       - httpApi:
           path: /orders/{orderId}
           method: GET
   prepareOrder:
-    handler: build/apps/queue/src/main.handler
+    handler: build/queue/src/main.handler
     name: prepare-order-${self:service}-${self:provider.stage}
+    package:
+      patterns:
+        - build/queue/src/**
     events:
       - sqs:
           arn:
@@ -51,28 +60,22 @@ resources:
 
 package:
   individually: true
-  exclude:
-  - node_modules/**
-  - apps/**/src/**
-  - test/**  
-  # patterns:
-  #   - '!node_modules/**'
-  #   - '!dist/**'
-  #   - '!coverage/**'
-  #   - '!cypress/**'
-  #   - '!apps/**'
-  #   - '!serverless.yml'
-  #   - '!.serverless/**'
-  #   - '!.git/**'
-  #   - '!.eslintrc.js'
-  #   - '!.prettierrc'
-  #   - '!.gitignore'
-  #   - '!nest-cli.json'
-  #   - '!package.json'
-  #   - '!package-lock.json'
-  #   - '!README.md'
-  #   - '!tsconfig.build.json'
-  #   - '!tsconfig.json'
-  #   - '!yarn.lock'
-  #   - '!esbuild.config.js'
-  #   - '!apps/**'
+  patterns:
+    - '!node_modules/**'
+    - '!coverage/**'
+    - '!apps/**'
+    - '!build/**'
+    - '!serverless.yml'
+    - '!.serverless/**'
+    - '!.git/**'
+    - '!.eslintrc.js'
+    - '!.prettierrc'
+    - '!.gitignore'
+    - '!nest-cli.json'
+    - '!package.json'
+    - '!package-lock.json'
+    - '!README.md'
+    - '!tsconfig.build.json'
+    - '!tsconfig.json'
+    - '!yarn.lock'
+  
