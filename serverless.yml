@@ -1,4 +1,4 @@
-service: orders
+service: app-pizza
 
 plugins:
   - serverless-offline
@@ -12,21 +12,21 @@ provider:
 
 functions:
   createOrder:
-    handler: dist/apps/orders/src/main.handler
-    name: create-new-${self:service}-${self:provider.stage}
+    handler: build/apps/orders/src/main.handler
+    name: create-new-order${self:service}-${self:provider.stage}
     events:
       - httpApi:
           path: /orders
           method: POST
-  getOrderById:
-    handler: dist/apps/order/src/main.handler
-    name: get-order-by-id-${self:service}-${self:provider.stage}
+  getOrder:
+    handler: build/apps/order/src/main.handler
+    name: get-order-${self:service}-${self:provider.stage}
     events:
       - httpApi:
           path: /orders/{orderId}
           method: GET
   prepareOrder:
-    handler: dist/apps/queue/src/main.handler
+    handler: build/apps/queue/src/main.handler
     name: prepare-order-${self:service}-${self:provider.stage}
     events:
       - sqs:
@@ -51,6 +51,10 @@ resources:
 
 package:
   individually: true
+  exclude:
+  - node_modules/**
+  - apps/**/src/**
+  - test/**  
   # patterns:
   #   - '!node_modules/**'
   #   - '!dist/**'
