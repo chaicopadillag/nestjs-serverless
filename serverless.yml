@@ -16,13 +16,17 @@ layers:
     name: ${self:service}-dependencies-${self:provider.stage}
     description: Production dependencies layer
     retain: false
+    compatibleArchitectures:
+      - x86_64
+    compatibleRuntimes:
+      - nodejs22.x
 
 functions:
   createOrder:
     handler: build/orders/src/main.handler
     name: create-new-order${self:service}-${self:provider.stage}
     layers:
-      - arn: { 'Fn::GetAtt': ['DependenciesLambdaLayer', 'Arn'] }
+      - { Ref: DependenciesLambdaLayer }
     package:
       patterns:
         - build/orders/src/**
@@ -34,7 +38,7 @@ functions:
     handler: build/order/src/main.handler
     name: get-order-${self:service}-${self:provider.stage}
     layers:
-      - arn: { 'Fn::GetAtt': ['DependenciesLambdaLayer', 'Arn'] }
+      - { Ref: DependenciesLambdaLayer }
     package:
       patterns:
         - build/order/src/**
@@ -46,7 +50,7 @@ functions:
     handler: build/queue/src/main.handler
     name: prepare-order-${self:service}-${self:provider.stage}
     layers:
-      - arn: { 'Fn::GetAtt': ['DependenciesLambdaLayer', 'Arn'] }
+      - { Ref: DependenciesLambdaLayer }
     package:
       patterns:
         - build/queue/src/**
@@ -60,6 +64,15 @@ functions:
 
 resources:
   Resources:
+    DependenciesLambdaLayer:
+      Type: AWS::Lambda::LayerVersion
+      Properties:
+        LayerName: ${self:service}-dependencies-${self:provider.stage}
+        Description: Production dependencies layer
+        CompatibleRuntimes:
+          - nodejs22.x
+        CompatibleArchitectures:
+          - x86_64
     PendingOrdersQueue:
       Type: AWS::SQS::Queue
       Properties:
