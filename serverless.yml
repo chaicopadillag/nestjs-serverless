@@ -10,10 +10,19 @@ provider:
   profile: developer
   region: us-east-2
 
+layers:
+  dependencies:
+    path: layers/nodejs/node_modules
+    name: ${self:service}-dependencies-${self:provider.stage}
+    description: Production dependencies layer
+    retain: false
+
 functions:
   createOrder:
     handler: build/orders/src/main.handler
     name: create-new-order${self:service}-${self:provider.stage}
+    layers:
+      - arn: { 'Fn::GetAtt': ['DependenciesLambdaLayer', 'Arn'] }
     package:
       patterns:
         - build/orders/src/**
@@ -24,6 +33,8 @@ functions:
   getOrder:
     handler: build/order/src/main.handler
     name: get-order-${self:service}-${self:provider.stage}
+    layers:
+      - arn: { 'Fn::GetAtt': ['DependenciesLambdaLayer', 'Arn'] }
     package:
       patterns:
         - build/order/src/**
@@ -34,6 +45,8 @@ functions:
   prepareOrder:
     handler: build/queue/src/main.handler
     name: prepare-order-${self:service}-${self:provider.stage}
+    layers:
+      - arn: { 'Fn::GetAtt': ['DependenciesLambdaLayer', 'Arn'] }
     package:
       patterns:
         - build/queue/src/**
@@ -61,6 +74,7 @@ resources:
 package:
   individually: true
   patterns:
+    - '!layers/**'
     - '!node_modules/**'
     - '!coverage/**'
     - '!apps/**'
@@ -78,4 +92,3 @@ package:
     - '!tsconfig.build.json'
     - '!tsconfig.json'
     - '!yarn.lock'
-  

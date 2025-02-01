@@ -3,6 +3,7 @@
 /node_modules
 /build
 /.serverless
+/layers
 # Logs
 logs
 *.log
