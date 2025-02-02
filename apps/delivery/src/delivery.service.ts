@@ -22,14 +22,16 @@ export class DeliveryService {
       const order = dynamodb.NewImage;
 
       const body = {
+        orderId: order.orderId.S,
         product: order.product.S,
         customer: order.customer.S,
         quantity: order.quantity.N,
         price: order.price.N,
         address: order.address.S,
-        latitude: order.latitude.N,
-        longitude: order.longitude.N,
+        latitude: order.latitude.S,
+        longitude: order.longitude.S,
         email: order.email.S,
+        status: order.status.S,
       };
 
       console.log('🚚 Sending order to delivery service', JSON.stringify(body));
