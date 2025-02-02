@@ -23,6 +23,20 @@ provider:
             - Fn::GetAtt:
                 - PendingOrdersQueue
                 - Arn
+        - Effect: Allow
+          Action:
+            - sqs:SendMessage
+          Resource:
+            - Fn::GetAtt:
+                - DeliveryPendingOrdersQueue
+                - Arn
+        - Effect: Allow
+          Action:
+            - dynamodb:PutItem
+          Resource:
+            - Fn::GetAtt:
+                - OrderTable
+                - Arn
 
 layers:
   dependencies:
@@ -49,6 +63,7 @@ functions:
     environment:
       PENDING_ORDERS_QUEUE_URL:
         Ref: PendingOrdersQueue
+      ORDERS_TABLE_NAME: ${self:custom.dynamodb.orderTable}
   getOrder:
     handler: build/order/src/main.handler
     name: get-order-${self:service}-${self:provider.stage}
@@ -72,6 +87,15 @@ functions:
               - PendingOrdersQueue
               - Arn
           batchSize: 1
+  deliverOrder:
+    handler: build/delivery/src/main.handler
+    name: deliver-order-${self:service}-${self:provider.stage}
+    package:
+      patterns:
+        - build/delivery/src/**
+    environment:
+      DELIVERY_PENDING_ORDERS_QUEUE_URL:
+        Ref: DeliveryPendingOrdersQueue
 
 resources:
   Resources:
@@ -88,6 +112,23 @@ resources:
       Type: AWS::SQS::Queue
       Properties:
         QueueName: pending-${self:service}-queue
+    DeliveryPendingOrdersQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: delivery-pending-${self:service}-queue
+    OrderTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.dynamodb.orderTable}
+        AttributeDefinitions:
+          - AttributeName: orderId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: orderId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
 
 build:
   esBuild:
@@ -116,3 +157,7 @@ package:
     - '!tsconfig.build.json'
     - '!tsconfig.json'
     - '!yarn.lock'
+
+custom:
+  dynamodb:
+    orderTable: ${self:service}-orders

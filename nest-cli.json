@@ -2,7 +2,8 @@
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
   "monorepo": true,
-  "root": "apps/orders",
+  "sourceRoot": "apps",
+  "webpack": true,
   "projects": {
     "orders": {
       "type": "application",
@@ -10,8 +11,6 @@
       "entryFile": "main",
       "sourceRoot": "apps/orders/src",
       "compilerOptions": {
-        "deleteOutDir": true,
-        "webpack": false,
         "tsConfigPath": "apps/orders/tsconfig.app.json"
       }
     },
@@ -21,8 +20,6 @@
       "entryFile": "main",
       "sourceRoot": "apps/queue/src",
       "compilerOptions": {
-        "deleteOutDir": true,
-        "webpack": false,
         "tsConfigPath": "apps/queue/tsconfig.app.json"
       }
     },
@@ -32,9 +29,16 @@
       "entryFile": "main",
       "sourceRoot": "apps/order/src",
       "compilerOptions": {
-        "deleteOutDir": true,
-        "webpack": false,
         "tsConfigPath": "apps/order/tsconfig.app.json"
+      }
+    },
+    "delivery": {
+      "type": "application",
+      "root": "apps/delivery",
+      "entryFile": "main",
+      "sourceRoot": "apps/delivery/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/delivery/tsconfig.app.json"
       }
     }
   }
