@@ -9,6 +9,8 @@ provider:
   stage: dev
   profile: developer
   region: us-east-2
+  layers:
+    - { Ref: DependenciesLambdaLayer }
 
 layers:
   dependencies:
@@ -25,8 +27,6 @@ functions:
   createOrder:
     handler: build/orders/src/main.handler
     name: create-new-order${self:service}-${self:provider.stage}
-    layers:
-      - { Ref: DependenciesLambdaLayer }
     package:
       patterns:
         - build/orders/src/**
@@ -37,8 +37,6 @@ functions:
   getOrder:
     handler: build/order/src/main.handler
     name: get-order-${self:service}-${self:provider.stage}
-    layers:
-      - { Ref: DependenciesLambdaLayer }
     package:
       patterns:
         - build/order/src/**
@@ -49,8 +47,6 @@ functions:
   prepareOrder:
     handler: build/queue/src/main.handler
     name: prepare-order-${self:service}-${self:provider.stage}
-    layers:
-      - { Ref: DependenciesLambdaLayer }
     package:
       patterns:
         - build/queue/src/**
@@ -78,6 +74,14 @@ resources:
       Properties:
         QueueName: pending-${self:service}-queue
 
+build:
+  esBuild:
+    bundle: true
+    minify: true
+    sourcemap:
+      type: linked
+      setNodeOptions: true
+
 package:
   individually: true
   patterns:
@@ -97,4 +101,3 @@ package:
     - '!tsconfig.build.json'
     - '!tsconfig.json'
     - '!yarn.lock'
-    - '!layers/nodejs/package.json'

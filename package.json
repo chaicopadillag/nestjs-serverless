@@ -12,7 +12,7 @@
     "start:dev": "nest start --watch",
     "dev": "serverless offline",
     "start:debug": "nest start --debug --watch",
-    "pre:prod": "rimraf -rf layers/nodejs && mkdir -p layers/nodejs && cp package.json layers/nodejs/ && yarn install --production --modules-folder layers/nodejs/node_modules",
+    "pre:prod": "rimraf -rf layers && mkdir -p layers/nodejs && cp package.json layers/nodejs/ && yarn install --production --modules-folder layers/nodejs/node_modules",
     "start:prod": "node dist/apps/orders/main",
     "sls:pack": "yarn pre:prod && yarn build && serverless package --verbose",
     "sls:deploy": "yarn pre:prod && yarn build && serverless deploy --verbose",
