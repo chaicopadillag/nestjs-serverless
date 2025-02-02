@@ -7,6 +7,7 @@ import {
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb';
 import { Injectable } from '@nestjs/common';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { v4 as uuid } from 'uuid';
 
 const sqsClient = new SQSClient({ region: process.env.APP_REGION });
 const dynamoClient = new DynamoDBClient({ region: process.env.APP_REGION });
@@ -19,7 +20,7 @@ export class OrdersService {
       const body = JSON.parse(req.body);
 
       const newOrder = {
-        id: Date.now(),
+        orderId: uuid(),
         ...body,
       };
       console.log('Start create new order with:', JSON.stringify(newOrder));
@@ -50,6 +51,9 @@ export class OrdersService {
       return {
         statusCode: 200,
         body: JSON.stringify(newOrder),
+        headers: {
+          'Content-Type': 'application/json',
+        },
       };
     } catch (error) {
       console.error('❌ Error creating order', error);
