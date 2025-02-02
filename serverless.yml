@@ -99,6 +99,16 @@ functions:
     package:
       patterns:
         - build/delivery/src/**
+    events:
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::GetAtt:
+              - OrderTable
+              - StreamArn
+          filterPatterns:
+            - eventName: [MODIFY]
+          batchSize: 1
     environment:
       DELIVERY_PENDING_ORDERS_QUEUE_URL:
         Ref: DeliveryPendingOrdersQueue
