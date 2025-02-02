@@ -12,7 +12,7 @@ provider:
 
 layers:
   dependencies:
-    path: layers/nodejs/node_modules
+    path: layers
     name: ${self:service}-dependencies-${self:provider.stage}
     description: Production dependencies layer
     retain: false
@@ -77,23 +77,15 @@ resources:
       Type: AWS::SQS::Queue
       Properties:
         QueueName: pending-${self:service}-queue
-# build:
-#   esBuild:
-#     bundle: true
-#     sourcemap: true
-#     minify: true
-#     target: nodejs22.x
 
 package:
   individually: true
   patterns:
-    - '!layers/**'
     - '!node_modules/**'
     - '!coverage/**'
     - '!apps/**'
     - '!build/**'
     - '!serverless.yml'
-    - '!.serverless/**'
     - '!.git/**'
     - '!.eslintrc.js'
     - '!.prettierrc'
@@ -105,3 +97,4 @@ package:
     - '!tsconfig.build.json'
     - '!tsconfig.json'
     - '!yarn.lock'
+    - '!layers/nodejs/package.json'
