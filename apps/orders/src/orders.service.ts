@@ -22,6 +22,7 @@ export class OrdersService {
       const newOrder = {
         orderId: uuid(),
         ...body,
+        status: 'PENDING',
       };
       console.log('Start create new order with:', JSON.stringify(newOrder));
 
