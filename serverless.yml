@@ -74,6 +74,8 @@ functions:
       - httpApi:
           path: /orders/{orderId}
           method: GET
+    environment:
+      ORDERS_TABLE_NAME: ${self:custom.dynamodb.orderTable}
   prepareOrder:
     handler: build/queue/src/main.handler
     name: prepare-order-${self:service}-${self:provider.stage}
@@ -87,6 +89,8 @@ functions:
               - PendingOrdersQueue
               - Arn
           batchSize: 1
+    environment:
+      ORDERS_TABLE_NAME: ${self:custom.dynamodb.orderTable}
   deliverOrder:
     handler: build/delivery/src/main.handler
     name: deliver-order-${self:service}-${self:provider.stage}
