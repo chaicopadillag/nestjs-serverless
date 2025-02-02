@@ -22,7 +22,7 @@ export class QueueService {
         Key: { orderId: order.orderId },
         UpdateExpression: 'SET #status = :status',
         ExpressionAttributeNames: { '#status': 'status' },
-        ExpressionAttributeValues: { ':status': 'PROCESSED' },
+        ExpressionAttributeValues: { ':status': 'COMPLETED' },
       };
 
       const updatedOrder = new UpdateCommand(updateStatusOrder);
