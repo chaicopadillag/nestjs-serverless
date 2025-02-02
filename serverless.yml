@@ -11,6 +11,18 @@ provider:
   region: us-east-2
   layers:
     - { Ref: DependenciesLambdaLayer }
+  environment:
+    APP_REGION: ${self:provider.region}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - sqs:SendMessage
+          Resource:
+            - Fn::GetAtt:
+                - PendingOrdersQueue
+                - Arn
 
 layers:
   dependencies:
@@ -34,6 +46,9 @@ functions:
       - httpApi:
           path: /orders
           method: POST
+    environment:
+      PENDING_ORDERS_QUEUE_URL:
+        Ref: PendingOrdersQueue
   getOrder:
     handler: build/order/src/main.handler
     name: get-order-${self:service}-${self:provider.stage}
